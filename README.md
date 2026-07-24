@@ -30,8 +30,19 @@ This repo exists separately from the central benchmarks publisher so Linkerd2 ca
 
 Pinned upstream source:
 
-- `d512cb7d1e306e43b27b993d3e0847d088f9d9ff`, the source revision from run
-  `30044625065`
+- `88414c62846b82ed75c6301d5374b5c75982b4ae`
+
+## Rolling Proof Series
+
+The benchmark replays these three linear `main` merge commits oldest to
+newest. Each associated PR successfully ran the upstream `build-ext (web)`
+Docker job:
+
+| Merge commit | Upstream proof |
+| --- | --- |
+| `eb392d88c6ab5b3928c4ee86b18b7995a094fc9d` | [PR #15508 run 29975955853](https://github.com/linkerd/linkerd2/actions/runs/29975955853) |
+| `20429bc0c6bf91e3344650444acf160586051c8d` | [PR #15486 run 29927205759](https://github.com/linkerd/linkerd2/actions/runs/29927205759) |
+| `88414c62846b82ed75c6301d5374b5c75982b4ae` | [PR #15499 run 30044625065](https://github.com/linkerd/linkerd2/actions/runs/30044625065) |
 
 ## Scenarios
 
@@ -40,15 +51,11 @@ Pinned upstream source:
 
 Fresh lane runs a no-prior-cache cold build plus one warm rerun on the same pinned source tree. Rolling lane records the upstream commit build as-is after each upstream sync against the prior rolling cache and skips `warm1`.
 
-BoringCache compares the explicit registry/OCI cache path and the managed
-BuildKit backend path. It does not call BoringCache inside Dockerfile `RUN`
-steps. This Docker benchmark is intentionally separate from the
+The two-entry matrix compares GitHub Actions cache with BoringCache managed
+BuildKit. It does not call BoringCache inside Dockerfile `RUN` steps. This
+Docker benchmark is intentionally separate from the
 `linkerd2-proxy` Rust/sccache comparison so each published row has one measured
 cache surface.
-
-The ECR comparison is optional and stays skipped until the benchmark repo has
-the existing Docker benchmark ECR variables. The required proof is GHA versus
-BoringCache; ECR is useful context, not a prerequisite.
 
 ## Output
 
