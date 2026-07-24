@@ -44,6 +44,25 @@ Docker job:
 | `20429bc0c6bf91e3344650444acf160586051c8d` | [PR #15486 run 29927205759](https://github.com/linkerd/linkerd2/actions/runs/29927205759) |
 | `88414c62846b82ed75c6301d5374b5c75982b4ae` | [PR #15499 run 30044625065](https://github.com/linkerd/linkerd2/actions/runs/30044625065) |
 
+## Measured Results
+
+The oldest commit populated each isolated `-proof` rolling cache and is not a
+comparative sample. The next two runs imported only that strategy's preceding
+rolling cache before building the changed upstream commit.
+
+| Upstream commit | Run | GitHub Actions cache | BoringCache | Time saved | GHA export | BoringCache export |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `20429bc` | [30092111131](https://github.com/boringcache/benchmark-linkerd2/actions/runs/30092111131) | 157s | 127s | 30s (19%) | 37.1s | 0.4s |
+| `88414c6` | [30092324077](https://github.com/boringcache/benchmark-linkerd2/actions/runs/30092324077) | 241s | 174s | 67s (28%) | 90.2s | 3.5s |
+| **Average** | | **199s** | **151s** | **49s (24%)** | **63.7s** | **2.0s** |
+
+Fresh run
+[`30090999227`](https://github.com/boringcache/benchmark-linkerd2/actions/runs/30090999227)
+measured a 322-second GitHub Actions cache cold build versus 193 seconds with
+BoringCache, followed by same-ref warm builds of four and three seconds. The
+fresh lane is a parity check; it does not seed or count toward the rolling
+series above.
+
 ## Scenarios
 
 - `cold`
