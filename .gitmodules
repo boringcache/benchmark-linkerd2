@@ -1,0 +1,4 @@
+[submodule "upstream"]
+	path = upstream
+	url = https://github.com/linkerd/linkerd2.git
+	shallow = true
