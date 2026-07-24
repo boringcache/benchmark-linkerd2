@@ -18,7 +18,7 @@ This repo exists separately from the central benchmarks publisher so Linkerd2 ca
 
 - a pinned upstream source commit
 - isolated GitHub Actions cache usage
-- one per-repo BoringCache workspace name: `boringcache/benchmark-linkerd2`
+- one per-repo BoringCache workspace name: `boringcache/benchmark-linkerd2-v2`
 - independent benchmark runs triggered by upstream sync commits and manual dispatches
 
 ## Source Model
@@ -28,9 +28,9 @@ This repo exists separately from the central benchmarks publisher so Linkerd2 ca
 - builds pass the same `LINKERD_VERSION` argument as Linkerd's
   `bin/docker-build-web` wrapper
 
-Pinned upstream source:
+Currently pinned upstream source:
 
-- `88414c62846b82ed75c6301d5374b5c75982b4ae`
+- `eb392d88c6ab5b3928c4ee86b18b7995a094fc9d`
 
 ## Rolling Proof Series
 

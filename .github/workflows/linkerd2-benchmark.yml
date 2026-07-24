@@ -56,7 +56,7 @@ jobs:
     with:
       strategy: ${{ matrix.strategy }}
       cache_lane: ${{ github.event_name == 'push' && 'rolling' || github.event_name == 'workflow_dispatch' && inputs.cache_lane || 'fresh' }}
-      benchmark_id: ${{ format('linkerd2{0}', inputs.benchmark_id_suffix) }}
+      benchmark_id: ${{ format('linkerd2-v2{0}', inputs.benchmark_id_suffix) }}
       project_repo: linkerd/linkerd2
       dockerfile_path: upstream/web/Dockerfile
       docker_context: upstream
@@ -67,5 +67,5 @@ jobs:
       cli_platform: linux-amd64
       cli_version: ${{ inputs.cli_version }}
       buildkit_image: ${{ matrix.strategy == 'boringcache' && (inputs.buildkit_image || 'ghcr.io/boringcache/buildkit:v0.30.0-bc') || 'mirror.gcr.io/moby/buildkit:buildx-stable-1' }}
-      benchmark_workspace: ${{ github.repository }}
+      benchmark_workspace: boringcache/benchmark-linkerd2-v2
     secrets: inherit
