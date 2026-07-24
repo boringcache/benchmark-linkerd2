@@ -30,7 +30,8 @@ This repo exists separately from the central benchmarks publisher so Linkerd2 ca
 
 Currently pinned upstream source:
 
-- `20429bc0c6bf91e3344650444acf160586051c8d`
+- see the committed `upstream/` submodule on `main`; the measured proof series
+  below remains fixed
 
 ## Rolling Proof Series
 
