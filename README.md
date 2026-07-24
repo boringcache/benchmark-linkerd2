@@ -30,7 +30,7 @@ This repo exists separately from the central benchmarks publisher so Linkerd2 ca
 
 Currently pinned upstream source:
 
-- `eb392d88c6ab5b3928c4ee86b18b7995a094fc9d`
+- `20429bc0c6bf91e3344650444acf160586051c8d`
 
 ## Rolling Proof Series
 
