@@ -11,6 +11,11 @@ on:
         type: choice
         default: fresh
         options: [fresh, rolling]
+      project_ref:
+        description: "Optional exact Linkerd commit for a controlled replay."
+        required: false
+        type: string
+        default: ""
       buildkit_image:
         description: "Optional managed BoringCache BuildKit image."
         required: false
@@ -58,6 +63,7 @@ jobs:
       cache_lane: ${{ github.event_name == 'push' && 'rolling' || github.event_name == 'workflow_dispatch' && inputs.cache_lane || 'fresh' }}
       benchmark_id: ${{ format('linkerd2-v2{0}', inputs.benchmark_id_suffix) }}
       project_repo: linkerd/linkerd2
+      project_ref: ${{ inputs.project_ref }}
       dockerfile_path: upstream/web/Dockerfile
       docker_context: upstream
       docker_build_args: |
