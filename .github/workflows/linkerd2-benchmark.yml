@@ -11,11 +11,6 @@ on:
         type: choice
         default: fresh
         options: [fresh, rolling]
-      project_ref:
-        description: "Optional exact Linkerd commit for a controlled replay."
-        required: false
-        type: string
-        default: ""
       buildkit_image:
         description: "Optional managed BoringCache BuildKit image."
         required: false
@@ -34,6 +29,15 @@ on:
   push:
     branches: [main]
     paths: [".gitmodules", "upstream"]
+  pull_request:
+    paths:
+      - ".boringcache.toml"
+      - ".gitmodules"
+      - ".github/workflows/linkerd2-benchmark.yml"
+      - ".github/workflows/reusable-linkerd2-docker-benchmark.yml"
+      - "scripts/prepare-source.sh"
+      - "scripts/scope-boringcache-run.sh"
+      - "upstream"
   schedule:
     - cron: "0 3 * * 1"
 
@@ -57,21 +61,11 @@ jobs:
             strategy: actions-cache
           - label: BoringCache
             strategy: boringcache
-    uses: ./.github/workflows/reusable-docker-buildkit-benchmark.yml
+    uses: ./.github/workflows/reusable-linkerd2-docker-benchmark.yml
     with:
       strategy: ${{ matrix.strategy }}
       cache_lane: ${{ github.event_name == 'push' && 'rolling' || github.event_name == 'workflow_dispatch' && inputs.cache_lane || 'fresh' }}
       benchmark_id: ${{ format('linkerd2-v2{0}', inputs.benchmark_id_suffix) }}
-      project_repo: linkerd/linkerd2
-      project_ref: ${{ inputs.project_ref }}
-      dockerfile_path: upstream/web/Dockerfile
-      docker_context: upstream
-      docker_build_args: |
-        --build-arg
-        LINKERD_VERSION=benchmark
-      image_tag: linkerd2-benchmark:latest
-      cli_platform: linux-amd64
       cli_version: ${{ inputs.cli_version }}
-      buildkit_image: ${{ matrix.strategy == 'actions-cache' && 'mirror.gcr.io/moby/buildkit:buildx-stable-1' || inputs.buildkit_image }}
-      benchmark_workspace: boringcache/benchmark-linkerd2-v2
+      buildkit_image: ${{ inputs.buildkit_image }}
     secrets: inherit
