@@ -5,6 +5,7 @@ inputs:
   cache_lane: {required: true}
   phase: {required: true}
   benchmark_id: {required: true}
+  push_image: {required: false, default: "false"}
   cli_version: {required: false, default: ""}
   buildkit_image: {required: false, default: ""}
 runs:
@@ -43,7 +44,7 @@ runs:
         echo "source_repository=$(printf '%s' "${source_url#https://github.com/}" | sed 's/\.git$//')" >> "$GITHUB_OUTPUT"
         echo "source_sha=$(git -C upstream rev-parse HEAD)" >> "$GITHUB_OUTPUT"
     - name: Log in to the GitHub Container Registry
-      if: github.event_name != 'pull_request'
+      if: inputs.push_image == 'true' && github.ref == 'refs/heads/main'
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
@@ -73,7 +74,7 @@ runs:
         context: upstream
         file: upstream/web/Dockerfile
         tags: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark:actions-cache
-        push: ${{ github.event_name != 'pull_request' }}
+        push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
         build-args: LINKERD_VERSION=benchmark
         provenance: false
         cache-from: type=gha,scope=${{ steps.scope.outputs.cache_scope }}
@@ -91,7 +92,7 @@ runs:
         dockerfile: upstream/web/Dockerfile
         image: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark
         tags: boringcache
-        push: ${{ github.event_name != 'pull_request' }}
+        push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
         build-args: LINKERD_VERSION=benchmark
         load: false
         fail-on-cache-error: true
@@ -110,7 +111,7 @@ runs:
         dockerfile: upstream/web/Dockerfile
         image: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark
         tags: boringcache
-        push: ${{ github.event_name != 'pull_request' }}
+        push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
         build-args: LINKERD_VERSION=benchmark
         load: false
         fail-on-cache-miss: true
