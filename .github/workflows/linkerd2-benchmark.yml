@@ -55,7 +55,6 @@ jobs:
       - name: Publish the Linkerd2 Docker benchmark report
         run: |
           python3 ./scripts/benchmark-report.py summarize \
-            --benchmark "$BENCHMARK_ID" \
             --title "Linkerd2 Docker rolling benchmark" \
             --input-dir phase-evidence \
             --output-dir benchmark-results
