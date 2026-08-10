@@ -20,6 +20,9 @@ runs:
       run: |
         git submodule sync --recursive
         git -c protocol.version=2 submodule update --init --depth 1 --recommend-shallow --jobs 4 upstream
+    - name: Verify the upstream benchmark recipe
+      shell: bash
+      run: python3 ./scripts/verify-upstream-recipe.py
     - name: Prepare clean Linkerd2 source
       shell: bash
       env:
@@ -43,6 +46,7 @@ runs:
         source_url="$(git config -f .gitmodules submodule.upstream.url)"
         echo "source_repository=$(printf '%s' "${source_url#https://github.com/}" | sed 's/\.git$//')" >> "$GITHUB_OUTPUT"
         echo "source_sha=$(git -C upstream rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        echo "source_tag=$(cd upstream && CI_FORCE_CLEAN=1 bin/root-tag)" >> "$GITHUB_OUTPUT"
     - name: Log in to the GitHub Container Registry
       if: inputs.push_image == 'true' && github.ref == 'refs/heads/main'
       uses: docker/login-action@v3
@@ -76,9 +80,10 @@ runs:
       with:
         context: upstream
         file: upstream/web/Dockerfile
+        platforms: linux/amd64,linux/arm64
         tags: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark:actions-cache
         push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
-        build-args: LINKERD_VERSION=benchmark
+        build-args: LINKERD_VERSION=${{ steps.scope.outputs.source_tag }}
         provenance: false
         cache-from: type=gha,scope=${{ steps.scope.outputs.cache_scope }}
         cache-to: type=gha,scope=${{ steps.scope.outputs.cache_scope }},mode=max
@@ -96,7 +101,8 @@ runs:
         image: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark
         tags: boringcache
         push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
-        build-args: LINKERD_VERSION=benchmark
+        platforms: linux/amd64,linux/arm64
+        build-args: LINKERD_VERSION=${{ steps.scope.outputs.source_tag }}
         load: false
         fail-on-cache-error: true
         metadata-hints: benchmark=${{ inputs.benchmark_id }},phase=${{ inputs.cache_lane == 'rolling' && 'rolling' || 'fresh-cold' }}
@@ -115,7 +121,8 @@ runs:
         image: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark
         tags: boringcache
         push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
-        build-args: LINKERD_VERSION=benchmark
+        platforms: linux/amd64,linux/arm64
+        build-args: LINKERD_VERSION=${{ steps.scope.outputs.source_tag }}
         load: false
         fail-on-cache-miss: true
         fail-on-cache-error: true
