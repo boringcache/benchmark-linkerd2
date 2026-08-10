@@ -80,7 +80,6 @@ runs:
       with:
         context: upstream
         file: upstream/web/Dockerfile
-        platforms: linux/amd64,linux/arm64
         tags: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark:actions-cache
         push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
         build-args: LINKERD_VERSION=${{ steps.scope.outputs.source_tag }}
@@ -101,7 +100,6 @@ runs:
         image: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark
         tags: boringcache
         push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
-        platforms: linux/amd64,linux/arm64
         build-args: LINKERD_VERSION=${{ steps.scope.outputs.source_tag }}
         load: false
         fail-on-cache-error: true
@@ -121,7 +119,6 @@ runs:
         image: ghcr.io/${{ github.repository_owner }}/linkerd2-benchmark
         tags: boringcache
         push: ${{ inputs.push_image == 'true' && github.ref == 'refs/heads/main' }}
-        platforms: linux/amd64,linux/arm64
         build-args: LINKERD_VERSION=${{ steps.scope.outputs.source_tag }}
         load: false
         fail-on-cache-miss: true

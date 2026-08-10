@@ -5,5 +5,5 @@ tag = "linkerd2-docker-local"
 metadata-hints = ["benchmark=linkerd2-web", "upstream-command=bin/docker-build-web"]
 command = [
   "bash", "-euo", "pipefail", "-c",
-  "source_tag=$(cd upstream && CI_FORCE_CLEAN=1 bin/root-tag); exec docker buildx build --file upstream/web/Dockerfile --platform linux/amd64,linux/arm64 --build-arg LINKERD_VERSION=${source_tag} --tag linkerd2-web-benchmark:local upstream",
+  "source_tag=$(cd upstream && CI_FORCE_CLEAN=1 bin/root-tag); exec docker buildx build --file upstream/web/Dockerfile --build-arg LINKERD_VERSION=${source_tag} --tag linkerd2-web-benchmark:local upstream",
 ]
